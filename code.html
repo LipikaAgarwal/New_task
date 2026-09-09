@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full w-full overflow-hidden">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1440, height=900, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Downtown Views II by Emaar | Tanami Properties</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"Montserrat"', 'sans-serif'],
+          },
+          colors: {
+            gold: {
+              300: '#F3E5AB',
+              400: '#E6CA65',
+              500: '#D4AF37',
+              600: '#AA820A',
+            },
+            champagne: '#DFD3C3',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Strict viewport confinement */
+    html, body {
+      width: 1440px;
+      height: 900px;
+      margin: 0 auto;
+      padding: 0;
+      overflow: hidden !important;
+      position: relative;
+      background-color: #08090C;
+      font-family: 'Montserrat', sans-serif;
+      user-select: none;
+    }
+    
+    .view-panel {
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+    .view-panel.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+      z-index: 20;
+    }
+    .view-panel.hidden-view {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+    }
+
+    .glass-card {
+      background: rgba(10, 13, 18, 0.68);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(212, 175, 55, 0.22);
+    }
+    
+    .glass-card-subtle {
+      background: rgba(15, 18, 24, 0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-btn.active .nav-indicator {
+      width: 28px;
+      background-color: #D4AF37;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+    }
+    .nav-btn.active .nav-text {
+      color: #F3E5AB;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+    }
+
+    /* Custom scrollbar just in case for tiny sub-elements */
+    ::-webkit-scrollbar {
+      width: 3px;
+      height: 3px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(212, 175, 55, 0.3);
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="h-[900px] w-[1440px] text-white flex flex-col justify-between p-0 m-0 select-none antialiased">
+
+  <!-- FULLSCREEN BACKGROUND IMAGE WITH DARK CINEMATIC GRADIENT -->
+  <div class="absolute inset-0 w-full h-full z-0 overflow-hidden">
+    <img 
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8XoRgNxv475af_vprYc6eYrQ4XEie704NEFPX7Of3cS2eKTXWomCVlhxyozWc-g9h7wXbMjpByHx_FGCLILxvkJFWqeGFSPoyUgMF-4OylUA7d5g1cSLSITL4KdF51_nJ_gY6tlq-rR_JCIZyeW1ByALK6wCzurC5A8Nzrgr-AmOn7lDl6B1oo0zqDygld2YCsYx3mbVSSM7Zqjvd59MuXaRlI9CLw47Q8zWL-68TqWHdSiZrKHI1" 
+      alt="Downtown Views II by Emaar Skyline" 
+      class="w-full h-full object-cover object-center scale-[1.02] transform transition-transform duration-1000 ease-out"
+      id="bg-image"
+    />
+    <!-- Luxury layered cinematic lighting and vignette -->
+    <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/55 to-black/85"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-transparent to-black/80"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(0,0,0,0.2)_0%,rgba(0,0,0,0.85)_100%)]"></div>
+  </div>
+
+  <!-- HEADER (Transparent minimal luxury navbar) -->
+  <header class="relative z-30 h-24 px-12 flex items-center justify-between border-b border-white/10">
+    <!-- Left: Tanami Properties Logo -->
+    <div class="flex items-center space-x-3">
+      <div class="w-9 h-9 border border-gold-500/80 rotate-45 flex items-center justify-center transition-transform hover:rotate-90 duration-500">
+        <span class="text-gold-400 font-serif font-semibold text-lg -rotate-45">T</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-white text-[13px] font-semibold tracking-[0.3em] uppercase">TANAMI</span>
+        <span class="text-gold-400/80 text-[8px] tracking-[0.35em] uppercase font-light">PROPERTIES DUBAI</span>
+      </div>
+    </div>
+
+    <!-- Center/Left: Downtown Views II / Emaar Properties -->
+    <div class="flex items-center space-x-6">
+      <div class="h-8 w-[1px] bg-white/20"></div>
+      <div class="flex flex-col">
+        <div class="flex items-center space-x-2">
+          <span class="font-serif tracking-[0.25em] text-white text-base font-normal uppercase">Downtown Views II</span>
+          <span class="text-[9px] px-2 py-0.5 rounded-full border border-gold-500/40 text-gold-300 font-sans tracking-wider">READY TO MOVE IN</span>
+        </div>
+        <span class="text-[9px] text-white/50 tracking-[0.3em] uppercase">By Emaar Properties • Downtown Dubai</span>
+      </div>
+    </div>
+
+    <!-- Right: WhatsApp, Call, Enquire Now -->
+    <div class="flex items-center space-x-5">
+      <!-- WhatsApp Icon -->
+      <a href="javascript:void(0)" onclick="switchTab('contact')" class="w-10 h-10 rounded-full border border-white/15 hover:border-gold-500/60 flex items-center justify-center text-white/80 hover:text-gold-400 transition-colors bg-white/5 hover:bg-white/10" title="Chat on WhatsApp">
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.97.585 1.961.902 3.242.902 3.183 0 5.769-2.586 5.77-5.766.001-3.182-2.585-5.789-6.216-6.089zm3.412 8.358c-.144.405-.837.774-1.17.822-.312.043-.634.072-1.802-.412-.992-.412-1.634-1.425-1.684-1.491-.05-.067-.394-.523-.394-.998 0-.474.249-.707.337-.805.089-.098.193-.122.257-.122.064 0 .129.002.185.006.059.004.138-.022.215.163.08.193.272.665.296.714.024.05.04.108.008.173-.032.064-.048.105-.096.161-.048.056-.102.126-.145.169-.048.048-.098.1-.042.196.056.097.248.409.533.663.366.326.675.427.771.475.097.048.153.04.21-.024.056-.064.242-.282.306-.379.064-.097.129-.08.217-.048.089.032.564.266.661.314.097.048.161.072.185.113.024.04.024.234-.12.639zM12 2C6.477 2 2 6.477 2 12c0 1.891.528 3.661 1.449 5.174L2 22l4.965-1.399C8.384 21.495 10.134 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.2c-1.637 0-3.159-.49-4.436-1.332l-.318-.21-2.951.831.846-2.887-.229-.333C4.004 14.975 3.5 13.535 3.5 12c0-4.687 3.813-8.5 8.5-8.5s8.5 3.813 8.5 8.5-3.813 8.5-8.5 8.5z"/>
+        </svg>
+      </a>
+
+      <!-- Call Icon -->
+      <a href="tel:+97142483400" class="w-10 h-10 rounded-full border border-white/15 hover:border-gold-500/60 flex items-center justify-center text-white/80 hover:text-gold-400 transition-colors bg-white/5 hover:bg-white/10" title="Direct Phone Call">
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+          <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+        </svg>
+      </a>
+
+      <!-- Enquire Button -->
+      <button onclick="switchTab('contact')" class="group relative px-6 py-2.5 overflow-hidden border border-gold-500 text-gold-300 hover:text-black font-sans text-xs tracking-[0.25em] font-medium uppercase transition-all duration-300">
+        <span class="absolute inset-0 bg-gold-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
+        <span class="relative z-10">ENQUIRE NOW</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- WORKSPACE MIDDLE: 100vh viewport container for Tab Views + Right Sidebar Navigation -->
+  <main class="relative z-20 flex-1 px-12 py-3 flex justify-between items-center overflow-hidden">
+
+    <!-- CONTENT DISPLAY AREA (Dynamic Views) -->
+    <div class="relative w-[1080px] h-[520px] flex items-center">
+      
+      <!-- 1. OVERVIEW VIEW (Hero project information) -->
+      <div id="view-overview" class="view-panel active w-full flex flex-col justify-center">
+        <div class="inline-flex items-center space-x-3 mb-2">
+          <span class="w-6 h-[1px] bg-gold-500"></span>
+          <span class="text-gold-400 font-sans tracking-[0.3em] text-xs uppercase font-light">Emaar Signature Collection</span>
+        </div>
+        
+        <h1 class="font-serif text-[68px] leading-[1.05] tracking-[0.04em] text-white font-light max-w-2xl mb-2">
+          DOWNTOWN<br>
+          <span class="italic text-champagne font-normal">VIEWS II</span>
+        </h1>
+
+        <p class="text-xl font-light text-white/90 tracking-wide max-w-xl mb-3 font-serif">
+          Luxury Residences in Downtown Dubai
+        </p>
+
+        <p class="text-white/60 font-sans font-light text-[13px] leading-relaxed max-w-lg mb-8 tracking-wider">
+          Elegant 1, 2 &amp; 3-bedroom residences in the heart of Downtown Dubai, directly connected to The Dubai Mall and overlooking the majestic Burj Khalifa.
+        </p>
+
+        <!-- 4 Key Value Metrics -->
+        <div class="grid grid-cols-4 gap-4 max-w-2xl pt-4 border-t border-white/10">
+          <div class="border-l border-gold-500/50 pl-3">
+            <span class="block text-white font-serif text-2xl font-light">1–3</span>
+            <span class="text-white/50 text-[10px] tracking-[0.2em] uppercase font-sans">Bedrooms</span>
+          </div>
+          <div class="border-l border-gold-500/50 pl-3">
+            <span class="block text-white font-serif text-2xl font-light">728+</span>
+            <span class="text-white/50 text-[10px] tracking-[0.2em] uppercase font-sans">Sq. Ft. From</span>
+          </div>
+          <div class="border-l border-gold-500/50 pl-3">
+            <span class="block text-white font-serif text-2xl font-light">Prime</span>
+            <span class="text-white/50 text-[10px] tracking-[0.2em] uppercase font-sans">Downtown Dubai</span>
+          </div>
+          <div class="border-l border-gold-500/50 pl-3">
+            <span class="block text-gold-400 font-serif text-2xl font-light">Ready</span>
+            <span class="text-white/50 text-[10px] tracking-[0.2em] uppercase font-sans">To Move In</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. AMENITIES VIEW -->
+      <div id="view-amenities" class="view-panel hidden-view w-full">
+        <div class="glass-card p-8 rounded-none border border-gold-500/30 max-w-3xl">
+          <div class="flex items-center justify-between pb-4 mb-6 border-b border-white/10">
+            <div>
+              <span class="text-gold-400 text-xs tracking-[0.3em] uppercase block font-sans">World-Class Lifestyle</span>
+              <h2 class="font-serif text-3xl font-normal tracking-wide text-white">Features &amp; High-End Amenities</h2>
+            </div>
+            <span class="text-white/40 text-xs font-mono">02 / 07</span>
+          </div>
+
+          <p class="text-white/70 text-xs font-light tracking-wide leading-relaxed mb-6">
+            Designed for an incomparable urban sanctuary experience with panoramic observation terraces, temperature-controlled resort pools, and state-of-the-art sports facilities.
+          </p>
+
+          <div class="grid grid-cols-3 gap-4">
+            <div class="glass-card-subtle p-4 border border-white/5 hover:border-gold-500/40 transition-all">
+              <div class="w-8 h-8 text-gold-400 mb-2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 18c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"/><path d="M2 14c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"/><circle cx="12" cy="5" r="2"/></svg>
+              </div>
+              <h4 class="font-serif text-base text-white">Infinity Swimming Pool</h4>
+              <p class="text-[11px] text-white/50 font-light mt-1">Temperature-controlled leisure deck overlooking Burj Khalifa</p>
+            </div>
+
+            <div class="glass-card-subtle p-4 border border-white/5 hover:border-gold-500/40 transition-all">
+              <div class="w-8 h-8 text-gold-400 mb-2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 12h12"/></svg>
+              </div>
+              <h4 class="font-serif text-base text-white">Equipped Gymnasium</h4>
+              <p class="text-[11px] text-white/50 font-light mt-1">Cutting-edge Technogym studio with private fitness trainers</p>
+            </div>
+
+            <div class="glass-card-subtle p-4 border border-white/5 hover:border-gold-500/40 transition-all">
+              <div class="w-8 h-8 text-gold-400 mb-2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+              </div>
+              <h4 class="font-serif text-base text-white">Fine Dining &amp; Cafes</h4>
+              <p class="text-[11px] text-white/50 font-light mt-1">Gourmet culinary experiences and artisanal café lounges</p>
+            </div>
+
+            <div class="glass-card-subtle p-4 border border-white/5 hover:border-gold-500/40 transition-all">
+              <div class="w-8 h-8 text-gold-400 mb-2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              </div>
+              <h4 class="font-serif text-base text-white">Kids Play Area</h4>
+              <p class="text-[11px] text-white/50 font-light mt-1">Dedicated shaded children play garden and indoor zone</p>
+            </div>
+
+            <div class="glass-card-subtle p-4 border border-white/5 hover:border-gold-500/40 transition-all">
+              <div class="w-8 h-8 text-gold-400 mb-2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              </div>
+              <h4 class="font-serif text-base text-white">Supermarket &amp; Retail</h4>
+              <p class="text-[11px] text-white/50 font-light mt-1">Direct air-conditioned bridge access to The Dubai Mall</p>
+            </div>
+
+            <div class="glass-card-subtle p-4 border border-white/5 hover:border-gold-500/40 transition-all">
+              <div class="w-8 h-8 text-gold-400 mb-2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <h4 class="font-serif text-base text-white">24/7 Concierge</h4>
+              <p class="text-[11px] text-white/50 font-light mt-1">Bespoke valet, round-the-clock security and reception</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. PAYMENT PLAN VIEW -->
+      <div id="view-payment" class="view-panel hidden-view w-full">
+        <div class="glass-card p-8 rounded-none border border-gold-500/30 max-w-3xl">
+          <div class="flex items-center justify-between pb-4 mb-6 border-b border-white/10">
+            <div>
+              <span class="text-gold-400 text-xs tracking-[0.3em] uppercase block font-sans">Attractive Investment</span>
+              <h2 class="font-serif text-3xl font-normal tracking-wide text-white">Flexible Payment Structure</h2>
+            </div>
+            <div class="text-right">
+              <span class="px-3 py-1 bg-gold-500/20 text-gold-300 border border-gold-500/40 text-[10px] tracking-widest uppercase">Special Post-Handover Offer</span>
+            </div>
+          </div>
+
+          <!-- Highlight Banner -->
+          <div class="p-4 bg-gradient-to-r from-gold-600/30 via-gold-500/15 to-transparent border-l-2 border-gold-500 mb-8">
+            <span class="text-white font-serif text-xl tracking-wide block">2 Years Post-Handover Payment Plan Available</span>
+            <span class="text-white/60 font-sans text-xs tracking-wider font-light">Own your luxury residence with effortless installment ease in Dubai's most prime square kilometer.</span>
+          </div>
+
+          <!-- Timeline Milestone Cards -->
+          <div class="grid grid-cols-3 gap-6 relative">
+            <div class="glass-card-subtle p-6 border-t-2 border-gold-400 text-center relative">
+              <span class="text-xs text-white/50 tracking-widest uppercase font-sans block mb-2">Step 01</span>
+              <div class="text-4xl font-serif text-gold-300 font-light mb-2">15%</div>
+              <div class="text-sm text-white font-medium mb-1">On Booking</div>
+              <p class="text-[11px] text-white/50 font-light">Immediate reservation with prompt unit allocation</p>
+            </div>
+
+            <div class="glass-card-subtle p-6 border-t-2 border-white/40 text-center relative">
+              <span class="text-xs text-white/50 tracking-widest uppercase font-sans block mb-2">Step 02</span>
+              <div class="text-4xl font-serif text-white font-light mb-2">65%</div>
+              <div class="text-sm text-white font-medium mb-1">During Construction</div>
+              <p class="text-[11px] text-white/50 font-light">Staged installments linked directly with development milestones</p>
+            </div>
+
+            <div class="glass-card-subtle p-6 border-t-2 border-gold-500 text-center relative">
+              <span class="text-xs text-white/50 tracking-widest uppercase font-sans block mb-2">Step 03</span>
+              <div class="text-4xl font-serif text-gold-400 font-light mb-2">20%</div>
+              <div class="text-sm text-white font-medium mb-1">Post Handover</div>
+              <p class="text-[11px] text-white/50 font-light">Convenient 2-year extended post-completion tenure</p>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-white/50 font-light">
+            <span>DLD Fee Waivers &amp; Institutional Mortgage Pre-Approval available upon request.</span>
+            <button onclick="switchTab('contact')" class="text-gold-400 hover:text-gold-300 underline underline-offset-4 tracking-wider">Download Brochure &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. LOCATION MAP VIEW -->
+      <div id="view-location" class="view-panel hidden-view w-full">
+        <div class="glass-card p-7 rounded-none border border-gold-500/30 max-w-4xl flex space-x-6 items-center">
+          <!-- Stylized Dubai Map Graphic Panel -->
+          <div class="w-1/2 h-[380px] bg-black/60 border border-white/10 relative overflow-hidden flex items-center justify-center">
+            <!-- Simulated Map Canvas Graphic -->
+            <svg class="absolute inset-0 w-full h-full opacity-35" viewBox="0 0 500 400">
+              <defs>
+                <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                  <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+              <!-- Dubai Coastline curved path -->
+              <path d="M 0,90 Q 150,160 300,190 T 500,280" fill="none" stroke="rgba(212,175,55,0.3)" stroke-width="2" />
+              <!-- Sheikh Zayed Road highway -->
+              <path d="M 50,400 L 450,0" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="3" stroke-dasharray="6,4"/>
+              <!-- Dubai Canal -->
+              <path d="M 120,400 Q 200,280 220,180" fill="none" stroke="rgba(90,160,255,0.35)" stroke-width="4"/>
+            </svg>
+
+            <!-- Map Markers -->
+            <!-- Downtown Views II (Main pin) -->
+            <div class="absolute top-[48%] left-[52%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group cursor-pointer z-10">
+              <span class="relative flex h-5 w-5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-5 w-5 bg-gold-500 items-center justify-center text-[9px] text-black font-bold">★</span>
+              </span>
+              <span class="bg-black/90 border border-gold-500 text-gold-300 font-serif text-xs px-2 py-0.5 mt-1 font-semibold whitespace-nowrap shadow-lg">Downtown Views II</span>
+            </div>
+
+            <!-- Burj Khalifa -->
+            <div class="absolute top-[40%] left-[38%] flex flex-col items-center opacity-80">
+              <div class="w-2.5 h-2.5 rounded-full bg-white border border-black"></div>
+              <span class="text-[10px] text-white/70 font-sans tracking-tight mt-0.5 whitespace-nowrap">Burj Khalifa (5 min)</span>
+            </div>
+
+            <!-- Dubai Mall -->
+            <div class="absolute top-[56%] left-[44%] flex flex-col items-center opacity-80">
+              <div class="w-2.5 h-2.5 rounded-full bg-white/80"></div>
+              <span class="text-[10px] text-white/70 font-sans tracking-tight mt-0.5 whitespace-nowrap">The Dubai Mall (Direct)</span>
+            </div>
+
+            <!-- DIFC -->
+            <div class="absolute top-[32%] left-[68%] flex flex-col items-center opacity-80">
+              <div class="w-2.5 h-2.5 rounded-full bg-white/80"></div>
+              <span class="text-[10px] text-white/70 font-sans tracking-tight mt-0.5 whitespace-nowrap">DIFC (5 min)</span>
+            </div>
+
+            <!-- DXB Airport -->
+            <div class="absolute top-[18%] left-[82%] flex flex-col items-center opacity-80">
+              <div class="w-2.5 h-2.5 rounded-full bg-white/80"></div>
+              <span class="text-[10px] text-white/70 font-sans tracking-tight mt-0.5 whitespace-nowrap">DXB Airport (10 min)</span>
+            </div>
+
+            <div class="absolute bottom-3 left-3 text-[10px] text-white/40 tracking-wider font-mono">
+              GPS: 25.1972° N, 55.2797° E
+            </div>
+          </div>
+
+          <!-- Location highlights description -->
+          <div class="w-1/2 space-y-4">
+            <div>
+              <span class="text-gold-400 text-xs tracking-[0.3em] uppercase block font-sans">Epicenter of Prestige</span>
+              <h2 class="font-serif text-3xl font-normal text-white">Downtown Dubai Connectivity</h2>
+            </div>
+            
+            <p class="text-white/70 text-xs font-light leading-relaxed">
+              Situated adjacent to Downtown Dubai on Financial Centre Road, with immediate air-conditioned pedestrian link to The Dubai Mall and rapid access to Sheikh Zayed Road and Al Khail Road.
+            </p>
+
+            <div class="space-y-2 pt-2">
+              <div class="flex items-center justify-between p-2.5 glass-card-subtle border-l-2 border-gold-500">
+                <span class="text-xs text-white font-medium">The Dubai Mall</span>
+                <span class="text-xs text-gold-400 font-sans font-light">Direct Attached Link</span>
+              </div>
+              <div class="flex items-center justify-between p-2.5 glass-card-subtle border-l-2 border-white/20">
+                <span class="text-xs text-white font-medium">Burj Khalifa &amp; Dubai Opera</span>
+                <span class="text-xs text-white/60 font-sans font-light">5 Minutes Walk</span>
+              </div>
+              <div class="flex items-center justify-between p-2.5 glass-card-subtle border-l-2 border-white/20">
+                <span class="text-xs text-white font-medium">Dubai Int. Financial Centre (DIFC)</span>
+                <span class="text-xs text-white/60 font-sans font-light">5 Minutes Drive</span>
+              </div>
+              <div class="flex items-center justify-between p-2.5 glass-card-subtle border-l-2 border-white/20">
+                <span class="text-xs text-white font-medium">Dubai International Airport (DXB)</span>
+                <span class="text-xs text-white/60 font-sans font-light">10 Minutes Drive</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. MASTER PLAN VIEW -->
+      <div id="view-masterplan" class="view-panel hidden-view w-full">
+        <div class="glass-card p-7 rounded-none border border-gold-500/30 max-w-4xl flex space-x-6 items-center">
+          <div class="w-7/12 h-[380px] bg-black/70 border border-white/15 relative overflow-hidden flex flex-col items-center justify-center p-6">
+            <!-- Architectural Master Plan Diagram Graphic -->
+            <div class="relative w-full h-full border border-gold-500/20 flex items-center justify-center">
+              <!-- Radial rings of development -->
+              <div class="absolute w-72 h-72 rounded-full border border-dashed border-white/10"></div>
+              <div class="absolute w-52 h-52 rounded-full border border-gold-500/20"></div>
+              
+              <!-- Tower Podiums -->
+              <div class="flex space-x-6 items-end relative z-10">
+                <div class="flex flex-col items-center">
+                  <div class="w-14 h-48 bg-gradient-to-t from-gold-600/40 to-white/20 border border-gold-400 flex items-center justify-center text-[10px] text-white rotate-180 [writing-mode:vertical-rl] font-mono">TOWER 1 • 64F</div>
+                  <span class="text-[9px] text-gold-300 mt-1 font-mono">Tower 1</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div class="w-16 h-56 bg-gradient-to-t from-gold-600/60 to-gold-300/30 border-2 border-gold-400 flex items-center justify-center text-[10px] text-gold-300 rotate-180 [writing-mode:vertical-rl] font-mono font-bold shadow-[0_0_15px_rgba(212,175,55,0.3)]">TOWER 2 • 67F</div>
+                  <span class="text-[9px] text-gold-400 mt-1 font-mono font-bold">Tower 2</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div class="w-14 h-44 bg-gradient-to-t from-gold-600/40 to-white/20 border border-gold-400 flex items-center justify-center text-[10px] text-white rotate-180 [writing-mode:vertical-rl] font-mono">TOWER 3 • 62F</div>
+                  <span class="text-[9px] text-gold-300 mt-1 font-mono">Tower 3</span>
+                </div>
+              </div>
+
+              <!-- Podium Deck Indicator -->
+              <div class="absolute bottom-6 w-5/6 h-6 border-t border-b border-gold-500/40 bg-white/5 flex items-center justify-center text-[10px] tracking-[0.2em] text-white/70">
+                MULTI-LEVEL LEISURE PODIUM &amp; DIRECT DUBAI MALL CONNECTOR
+              </div>
+            </div>
+          </div>
+
+          <div class="w-5/12 space-y-4">
+            <span class="text-gold-400 text-xs tracking-[0.3em] uppercase block font-sans">Architectural Precision</span>
+            <h2 class="font-serif text-3xl font-normal text-white">Triple Tower Masterpiece</h2>
+            <p class="text-white/70 text-xs font-light leading-relaxed">
+              Downtown Views II comprises three high-rise residential towers rising up to 67 storeys above a 9-storey podium deck with resort style infinity pool, gardens, and premium retail promenade.
+            </p>
+            <div class="space-y-2 border-t border-white/10 pt-3">
+              <div class="text-xs text-white/80"><span class="text-gold-400 font-serif text-base mr-2">67</span> Storeys Tower Pinnacle Height</div>
+              <div class="text-xs text-white/80"><span class="text-gold-400 font-serif text-base mr-2">3</span> Sculptural Glistening Towers</div>
+              <div class="text-xs text-white/80"><span class="text-gold-400 font-serif text-base mr-2">360°</span> Unobstructed Skyline Panoramas</div>
+            </div>
+            <button onclick="switchTab('floorplan')" class="px-5 py-2 border border-white/30 text-white hover:border-gold-500 hover:text-gold-300 text-xs font-sans tracking-widest uppercase transition-colors">
+              Explore Floor Plans &rarr;
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. FLOOR PLAN VIEW -->
+      <div id="view-floorplan" class="view-panel hidden-view w-full">
+        <div class="glass-card p-7 rounded-none border border-gold-500/30 max-w-4xl flex space-x-6 items-center">
+          
+          <!-- Left: Floor Plan Vector Blueprint Rendering -->
+          <div class="w-7/12 h-[380px] bg-black/80 border border-white/15 p-4 flex flex-col justify-between relative">
+            <!-- Bedroom Selector Tabs -->
+            <div class="flex space-x-2 border-b border-white/10 pb-2">
+              <button onclick="changeBedPlan(1)" id="plan-tab-1" class="px-4 py-1 text-xs font-serif uppercase tracking-wider text-gold-400 border-b-2 border-gold-500">1 Bedroom</button>
+              <button onclick="changeBedPlan(2)" id="plan-tab-2" class="px-4 py-1 text-xs font-serif uppercase tracking-wider text-white/50 hover:text-white">2 Bedroom</button>
+              <button onclick="changeBedPlan(3)" id="plan-tab-3" class="px-4 py-1 text-xs font-serif uppercase tracking-wider text-white/50 hover:text-white">3 Bedroom</button>
+            </div>
+
+            <!-- Floor Plan SVG Blueprint Illustration -->
+            <div class="flex-1 flex items-center justify-center p-2 relative" id="blueprint-area">
+              <svg class="w-full h-56 stroke-gold-400/80 fill-none" viewBox="0 0 320 200" stroke-width="1.2">
+                <!-- Master Exterior Walls -->
+                <rect x="20" y="20" width="280" height="160" stroke="#D4AF37" stroke-width="2"/>
+                
+                <!-- Living & Dining Area -->
+                <rect x="20" y="20" width="160" height="100"/>
+                <text x="55" y="70" fill="#fff" stroke="none" font-size="10" font-family="Montserrat" letter-spacing="1">LIVING / DINING</text>
+                
+                <!-- Balcony -->
+                <rect x="20" y="120" width="160" height="60" stroke-dasharray="4 2"/>
+                <text x="65" y="155" fill="#D4AF37" stroke="none" font-size="9" font-family="Montserrat">BALCONY TERRACE</text>
+                
+                <!-- Master Bedroom -->
+                <rect x="180" y="20" width="120" height="110"/>
+                <text x="195" y="75" fill="#fff" stroke="none" font-size="9" font-family="Montserrat">MASTER SUITE</text>
+                
+                <!-- Ensuite Bathroom & Walk-in -->
+                <rect x="180" y="130" width="120" height="50"/>
+                <text x="210" y="160" fill="#aaa" stroke="none" font-size="8" font-family="Montserrat">BATH &amp; WIC</text>
+                
+                <!-- Entry foyer door swing -->
+                <path d="M 20 50 A 30 30 0 0 1 50 20" stroke="rgba(255,255,255,0.4)"/>
+              </svg>
+            </div>
+
+            <div class="text-[10px] text-white/40 font-mono flex justify-between">
+              <span>* Architectural layout indicative to scale</span>
+              <span>DW-T2-FL-802</span>
+            </div>
+          </div>
+
+          <!-- Right: Unit Specifications -->
+          <div class="w-5/12 space-y-4">
+            <div>
+              <span class="text-gold-400 text-xs tracking-[0.3em] uppercase block font-sans">Unit Specifications</span>
+              <h2 id="plan-title" class="font-serif text-3xl font-normal text-white">1 Bedroom Residence</h2>
+            </div>
+
+            <div class="space-y-3 pt-2">
+              <div class="flex justify-between items-center py-2 border-b border-white/10">
+                <span class="text-white/60 text-xs font-light">Bedrooms</span>
+                <span id="plan-beds" class="text-white font-medium text-sm">1 Bed + Laundry</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b border-white/10">
+                <span class="text-white/60 text-xs font-light">Unit Type</span>
+                <span id="plan-type" class="text-white font-medium text-sm">Suite Collection 02</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b border-white/10">
+                <span class="text-white/60 text-xs font-light">Total Area</span>
+                <span id="plan-size" class="text-gold-400 font-medium text-sm">728 - 850 Sq. Ft.</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b border-white/10">
+                <span class="text-white/60 text-xs font-light">View Orientation</span>
+                <span id="plan-view" class="text-white font-medium text-sm">Burj Khalifa &amp; Fountain</span>
+              </div>
+            </div>
+
+            <button onclick="switchTab('contact')" class="w-full mt-4 py-3 bg-gold-500 text-black font-sans font-medium text-xs tracking-[0.25em] uppercase hover:bg-gold-400 transition-colors">
+              REQUEST DETAILED FLOORPLAN PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. CONTACT VIEW -->
+      <div id="view-contact" class="view-panel hidden-view w-full">
+        <div class="glass-card p-8 rounded-none border border-gold-500/30 max-w-2xl">
+          <div class="flex items-center justify-between pb-3 mb-5 border-b border-white/10">
+            <div>
+              <span class="text-gold-400 text-xs tracking-[0.3em] uppercase block font-sans">Tanami Properties Dubai</span>
+              <h2 class="font-serif text-3xl font-normal tracking-wide text-white">Get in Touch</h2>
+            </div>
+            <div class="text-right text-[10px] text-white/50">
+              <span>Direct Developer Allocation</span>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <form onsubmit="event.preventDefault(); alert('Thank you! A luxury property specialist from Tanami Properties will contact you shortly.');" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[10px] uppercase font-sans tracking-widest text-white/60 mb-1">Your Full Name</label>
+                <input type="text" placeholder="e.g. Alexander Vance" required class="w-full bg-white/5 border border-white/15 focus:border-gold-400 px-3 py-2 text-xs text-white placeholder-white/20 outline-none transition-colors">
+              </div>
+              <div>
+                <label class="block text-[10px] uppercase font-sans tracking-widest text-white/60 mb-1">Email Address</label>
+                <input type="email" placeholder="alexander@luxury.com" required class="w-full bg-white/5 border border-white/15 focus:border-gold-400 px-3 py-2 text-xs text-white placeholder-white/20 outline-none transition-colors">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] uppercase font-sans tracking-widest text-white/60 mb-1">Phone / WhatsApp Number</label>
+              <input type="tel" placeholder="+971 50 123 4567" required class="w-full bg-white/5 border border-white/15 focus:border-gold-400 px-3 py-2 text-xs text-white placeholder-white/20 outline-none transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-[10px] uppercase font-sans tracking-widest text-white/60 mb-1">Interested Residence Type</label>
+              <select class="w-full bg-[#12151D] border border-white/15 focus:border-gold-400 px-3 py-2 text-xs text-white/90 outline-none transition-colors">
+                <option>1 Bedroom Luxury Suite (728+ Sq Ft)</option>
+                <option>2 Bedroom Residence (1,150+ Sq Ft)</option>
+                <option>3 Bedroom Sky Residence (1,600+ Sq Ft)</option>
+                <option>Full Floor / Penthouse Inquiry</option>
+              </select>
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-gold-500 hover:bg-gold-400 text-black font-sans font-semibold text-xs tracking-[0.25em] uppercase transition-colors">
+              ENQUIRE NOW &amp; RECEIVE PRICELIST
+            </button>
+          </form>
+
+          <!-- Call and WhatsApp options -->
+          <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+            <a href="tel:+97142483400" class="flex items-center space-x-2 text-xs text-white/70 hover:text-gold-400 transition-colors">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span>Call: +971 4 248 3400</span>
+            </a>
+            <a href="https://wa.me/971501234567" target="_blank" class="flex items-center space-x-2 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.97.585 1.961.902 3.242.902 3.183 0 5.769-2.586 5.77-5.766.001-3.182-2.585-5.789-6.216-6.089z"/></svg>
+              <span>Instant WhatsApp Concierge</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT SIDE VERTICAL NAVIGATION MENU (Luxury Property Control Panel) -->
+    <nav class="relative z-30 flex flex-col justify-center pl-8 border-l border-white/10 h-[480px]">
+      <div class="text-[9px] text-gold-500/70 tracking-[0.3em] uppercase mb-4 font-mono pl-3">Navigation Panel</div>
+      <div class="flex flex-col space-y-4">
+        
+        <button onclick="switchTab('overview')" id="nav-overview" class="nav-btn active flex items-center space-x-3 text-left py-1 transition-all group">
+          <span class="nav-indicator w-3 h-[1.5px] bg-white/30 transition-all duration-300"></span>
+          <span class="nav-text text-xs tracking-[0.15em] text-white/60 hover:text-white uppercase transition-colors">Overview</span>
+        </button>
+
+        <button onclick="switchTab('amenities')" id="nav-amenities" class="nav-btn flex items-center space-x-3 text-left py-1 transition-all group">
+          <span class="nav-indicator w-3 h-[1.5px] bg-white/30 transition-all duration-300"></span>
+          <span class="nav-text text-xs tracking-[0.15em] text-white/60 hover:text-white uppercase transition-colors">Amenities</span>
+        </button>
+
+        <button onclick="switchTab('payment')" id="nav-payment" class="nav-btn flex items-center space-x-3 text-left py-1 transition-all group">
+          <span class="nav-indicator w-3 h-[1.5px] bg-white/30 transition-all duration-300"></span>
+          <span class="nav-text text-xs tracking-[0.15em] text-white/60 hover:text-white uppercase transition-colors">Payment Plan</span>
+        </button>
+
+        <button onclick="switchTab('location')" id="nav-location" class="nav-btn flex items-center space-x-3 text-left py-1 transition-all group">
+          <span class="nav-indicator w-3 h-[1.5px] bg-white/30 transition-all duration-300"></span>
+          <span class="nav-text text-xs tracking-[0.15em] text-white/60 hover:text-white uppercase transition-colors">Location Map</span>
+        </button>
+
+        <button onclick="switchTab('masterplan')" id="nav-masterplan" class="nav-btn flex items-center space-x-3 text-left py-1 transition-all group">
+          <span class="nav-indicator w-3 h-[1.5px] bg-white/30 transition-all duration-300"></span>
+          <span class="nav-text text-xs tracking-[0.15em] text-white/60 hover:text-white uppercase transition-colors">Master Plan</span>
+        </button>
+
+        <button onclick="switchTab('floorplan')" id="nav-floorplan" class="nav-btn flex items-center space-x-3 text-left py-1 transition-all group">
+          <span class="nav-indicator w-3 h-[1.5px] bg-white/30 transition-all duration-300"></span>
+          <span class="nav-text text-xs tracking-[0.15em] text-white/60 hover:text-white uppercase transition-colors">Floor Plan</span>
+        </button>
+
+        <button onclick="switchTab('contact')" id="nav-contact" class="nav-btn flex items-center space-x-3 text-left py-1 transition-all group">
+          <span class="nav-indicator w-3 h-[1.5px] bg-white/30 transition-all duration-300"></span>
+          <span class="nav-text text-xs tracking-[0.15em] text-white/60 hover:text-white uppercase transition-colors">Contact</span>
+        </button>
+
+      </div>
+
+      <!-- Live status tracker -->
+      <div class="mt-8 pt-4 border-t border-white/10 pl-3">
+        <div class="flex items-center space-x-2 text-[9px] text-white/40 tracking-wider">
+          <span class="w-1.5 h-1.5 rounded-full bg-gold-400 animate-pulse"></span>
+          <span>PRESENTATION MODE</span>
+        </div>
+      </div>
+    </nav>
+
+  </main>
+
+  <!-- BOTTOM INFORMATION BAR (Translucent Glass Panel strictly inside 900px) -->
+  <footer class="relative z-30 h-32 px-12 pb-4 flex items-center">
+    <div class="w-full h-24 glass-card px-8 flex items-center justify-between border border-white/10 shadow-2xl">
+      
+      <!-- OVERVIEW: short 2-line project description -->
+      <div class="w-5/12 pr-6 border-r border-white/10">
+        <div class="flex items-center space-x-2 mb-1">
+          <span class="text-gold-400 text-[10px] tracking-[0.25em] font-sans uppercase font-medium">OVERVIEW</span>
+          <span class="text-white/30 text-[9px]">•</span>
+          <span class="text-white/50 text-[10px] tracking-wider">DOWNTOWN DUBAI</span>
+        </div>
+        <p class="text-xs text-white/80 font-light leading-snug line-clamp-2">
+          An architectural icon directly connected to The Dubai Mall via air-conditioned bridge. Enjoy unrivaled vistas of Burj Khalifa, Dubai Fountain, and the glittering metropolis skyline.
+        </p>
+      </div>
+
+      <!-- FEATURES & AMENITIES: Icons & labels -->
+      <div class="w-7/12 pl-6 flex items-center justify-between">
+        
+        <!-- Swimming Pool -->
+        <div class="flex flex-col items-center group cursor-pointer" onclick="switchTab('amenities')">
+          <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 group-hover:border-gold-500/60 flex items-center justify-center text-gold-400 mb-1 transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 18c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"/><path d="M2 14c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"/><circle cx="12" cy="5" r="2"/></svg>
+          </div>
+          <span class="text-[10px] text-white/70 tracking-wider group-hover:text-gold-300 transition-colors">Swimming Pool</span>
+        </div>
+
+        <!-- Gymnasium -->
+        <div class="flex flex-col items-center group cursor-pointer" onclick="switchTab('amenities')">
+          <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 group-hover:border-gold-500/60 flex items-center justify-center text-gold-400 mb-1 transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 12h12"/></svg>
+          </div>
+          <span class="text-[10px] text-white/70 tracking-wider group-hover:text-gold-300 transition-colors">Gymnasium</span>
+        </div>
+
+        <!-- Dining -->
+        <div class="flex flex-col items-center group cursor-pointer" onclick="switchTab('amenities')">
+          <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 group-hover:border-gold-500/60 flex items-center justify-center text-gold-400 mb-1 transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>
+          </div>
+          <span class="text-[10px] text-white/70 tracking-wider group-hover:text-gold-300 transition-colors">Dining</span>
+        </div>
+
+        <!-- Kids Play Area -->
+        <div class="flex flex-col items-center group cursor-pointer" onclick="switchTab('amenities')">
+          <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 group-hover:border-gold-500/60 flex items-center justify-center text-gold-400 mb-1 transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+          </div>
+          <span class="text-[10px] text-white/70 tracking-wider group-hover:text-gold-300 transition-colors">Kids Play Area</span>
+        </div>
+
+        <!-- Restaurants -->
+        <div class="flex flex-col items-center group cursor-pointer" onclick="switchTab('amenities')">
+          <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 group-hover:border-gold-500/60 flex items-center justify-center text-gold-400 mb-1 transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span class="text-[10px] text-white/70 tracking-wider group-hover:text-gold-300 transition-colors">Restaurants</span>
+        </div>
+
+        <!-- Supermarket -->
+        <div class="flex flex-col items-center group cursor-pointer" onclick="switchTab('amenities')">
+          <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 group-hover:border-gold-500/60 flex items-center justify-center text-gold-400 mb-1 transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </div>
+          <span class="text-[10px] text-white/70 tracking-wider group-hover:text-gold-300 transition-colors">Supermarket</span>
+        </div>
+
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- VANILLA JAVASCRIPT FOR DYNAMIC TAB SWITCHING (No page reload, pure smooth fade within 100vh) -->
+  <script>
+    const views = ['overview', 'amenities', 'payment', 'location', 'masterplan', 'floorplan', 'contact'];
+
+    function switchTab(viewId) {
+      views.forEach(v => {
+        const panel = document.getElementById(`view-${v}`);
+        const nav = document.getElementById(`nav-${v}`);
+        
+        if (v === viewId) {
+          panel.classList.remove('hidden-view');
+          panel.classList.add('active');
+          if (nav) nav.classList.add('active');
+        } else {
+          panel.classList.remove('active');
+          panel.classList.add('hidden-view');
+          if (nav) nav.classList.remove('active');
+        }
+      });
+    }
+
+    // Floor plan sub-tab switcher
+    const plans = {
+      1: {
+        title: "1 Bedroom Residence",
+        beds: "1 Bed + Laundry",
+        type: "Suite Collection 02",
+        size: "728 - 850 Sq. Ft.",
+        view: "Burj Khalifa & Fountain"
+      },
+      2: {
+        title: "2 Bedroom Residence",
+        beds: "2 Beds + Balcony Terrace",
+        type: "Corner Luxury Unit 05",
+        size: "1,150 - 1,320 Sq. Ft.",
+        view: "Panoramic Downtown & Canal"
+      },
+      3: {
+        title: "3 Bedroom Sky Residence",
+        beds: "3 Beds + Maid Room",
+        type: "Sky Collection Penthouse Level",
+        size: "1,600 - 1,890 Sq. Ft.",
+        view: "Full Unobstructed Burj Khalifa"
+      }
+    };
+
+    function changeBedPlan(beds) {
+      [1, 2, 3].forEach(b => {
+        const tab = document.getElementById(`plan-tab-${b}`);
+        if (b === beds) {
+          tab.className = "px-4 py-1 text-xs font-serif uppercase tracking-wider text-gold-400 border-b-2 border-gold-500";
+        } else {
+          tab.className = "px-4 py-1 text-xs font-serif uppercase tracking-wider text-white/50 hover:text-white";
+        }
+      });
+
+      const data = plans[beds];
+      document.getElementById('plan-title').textContent = data.title;
+      document.getElementById('plan-beds').textContent = data.beds;
+      document.getElementById('plan-type').textContent = data.type;
+      document.getElementById('plan-size').textContent = data.size;
+      document.getElementById('plan-view').textContent = data.view;
+    }
+  </script>
+</body>
+</html>
